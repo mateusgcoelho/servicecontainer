@@ -1,28 +1,28 @@
 package models
 
-type engineType string
+type EngineType string
 
 const (
-	EngineJava8  engineType = "java8"
-	EngineNodeJs engineType = "nodejs"
+	EngineJava8  EngineType = "java8"
+	EngineNodeJs EngineType = "nodejs"
 )
 
-type status int
+type ServiceStatus int
 
 const (
-	ServiceStoped     status = 0
-	ServiceStarting   status = 1
-	ServiceStarted    status = 2
-	ServiceInDownload status = 3
+	ServiceStoped     ServiceStatus = 0
+	ServiceStarting   ServiceStatus = 1
+	ServiceStarted    ServiceStatus = 2
+	ServiceInDownload ServiceStatus = 3
 )
 
 type ServiceModel struct {
-	Id          int        `json:"id"`
-	Tag         string     `json:"tag"`
-	PrefixUrl   string     `json:"prefixUrl"`
-	DefaultPort int        `json:"defaultPort"`
-	DisplayName string     `json:"displayName"`
-	FileName    string     `json:"fileName"`
-	EngineType  engineType `json:"engineType"`
-	Status      status     `json:"status"`
+	Id          int           `json:"id"`
+	Tag         string        `json:"tag"`
+	PrefixUrl   string        `json:"prefixUrl"`
+	DefaultPort int           `json:"defaultPort"`
+	DisplayName string        `json:"displayName"`
+	FileName    string        `json:"fileName"`
+	EngineType  EngineType    `json:"engineType"`
+	Status      ServiceStatus `json:"status"`
 }

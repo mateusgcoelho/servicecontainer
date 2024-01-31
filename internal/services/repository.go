@@ -2,42 +2,30 @@ package services
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
-	"sync"
 
 	"github.com/mateusgcoelho/servicecontainer/internal/models"
 	"github.com/mateusgcoelho/servicecontainer/internal/shared"
 	"github.com/mateusgcoelho/servicecontainer/internal/storage"
 )
 
-var serviceMutex sync.Mutex
-
 func getServices() ([]*models.ServiceModel, error) {
-	serviceMutex.Lock()
-	defer serviceMutex.Unlock()
-
-	if storage.Services != nil {
-		return storage.Services, nil
+	if storage.Services == nil {
+		panic(fmt.Errorf("Não foi possível encontrar serviços."))
 	}
-
-	services, err := getServicesFromSqlite()
-	if err != nil {
-		return nil, err
-	}
-
-	storage.Services = services
 
 	return storage.Services, nil
 }
 
-func getServicesFromSqlite() ([]*models.ServiceModel, error) {
+func GetServicesFromSqlite() ([]*models.ServiceModel, error) {
 	query := `
-			SELECT
-				id, tag, prefixUrl,
-				defaultPort, displayName,
-				fileName, engineType
-			FROM services
-		`
+		SELECT
+			id, tag, prefixUrl,
+			defaultPort, displayName,
+			fileName, engineType
+		FROM services
+	`
 
 	rows, err := shared.Db.Query(query)
 	if err != nil {
@@ -67,6 +55,20 @@ func getServicesFromSqlite() ([]*models.ServiceModel, error) {
 	}
 
 	return services, nil
+}
+
+func getServiceByTag(tag string) (*models.ServiceModel, error) {
+	if storage.Services == nil {
+		return nil, fmt.Errorf("Não foi possível encontrar serviços.")
+	}
+
+	for _, service := range storage.Services {
+		if service.Tag == tag {
+			return service, nil
+		}
+	}
+
+	return nil, nil
 }
 
 func GetServicesFromGestor() ([]*models.ServiceModel, error) {

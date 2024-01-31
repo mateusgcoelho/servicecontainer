@@ -12,7 +12,7 @@ import (
 func main() {
 	app.InitConfigEnvs()
 	shared.InitSqliteDatabase()
-	app.SyncServicesWithGestor()
+	app.SyncServicesInStorage()
 	app.InitWebServer()
 
 	defer shared.Db.Close()

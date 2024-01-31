@@ -7,9 +7,17 @@ type DefaultResponse struct {
 	Data    interface{} `json:"data"`
 }
 
-func SendResponse(ctx *gin.Context, status int, data interface{}, message *string) {
+func SendResponseWithMessage(ctx *gin.Context, status int, data interface{}, message string) {
+	messagePointer := message
 	ctx.JSON(status, DefaultResponse{
-		Message: message,
+		Message: &messagePointer,
+		Data:    data,
+	})
+}
+
+func SendResponse(ctx *gin.Context, status int, data interface{}) {
+	ctx.JSON(status, DefaultResponse{
+		Message: nil,
 		Data:    data,
 	})
 }
