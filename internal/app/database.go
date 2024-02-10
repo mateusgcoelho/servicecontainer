@@ -1,22 +1,42 @@
 package app
 
 import (
-	"github.com/mateusgcoelho/servicecontainer/internal/services"
-	"github.com/mateusgcoelho/servicecontainer/internal/storage"
+	"database/sql"
+	"fmt"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
-func SyncServicesInStorage() {
-	servicesGestor, err := services.GetServicesFromGestor()
-	if err != nil {
-		return
-	}
-
-	services.SyncServices(servicesGestor)
-
-	services, err := services.GetServicesFromSqlite()
+func InitSqliteDatabase() *sql.DB {
+	dbOpenned, err := sql.Open("sqlite3", "database.db")
 	if err != nil {
 		panic(err)
 	}
+	if err = dbOpenned.Ping(); err != nil {
+		panic(err)
+	}
+	fmt.Println("Banco de dados Sqlite iniciado com sucesso.")
 
-	storage.Services = services
+	runMigrations(dbOpenned)
+	return dbOpenned
+}
+
+func runMigrations(db *sql.DB) {
+	query := `
+		CREATE TABLE IF NOT EXISTS services(
+		  id INT PRIMARY KEY,
+		  tag TEXT,
+		  suffixUrl TEXT,
+		  defaultPort INT,
+		  displayName TEXT,
+		  fileName TEXT,
+		  engineType TEXT
+		);
+	`
+
+	_, err := db.Exec(query)
+
+	if err != nil {
+		panic(err)
+	}
 }

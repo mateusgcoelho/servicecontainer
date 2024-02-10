@@ -19,7 +19,7 @@ const (
 type ServiceModel struct {
 	Id          int           `json:"id"`
 	Tag         string        `json:"tag"`
-	PrefixUrl   string        `json:"prefixUrl"`
+	SuffixUrl   string        `json:"suffixUrl"`
 	DefaultPort int           `json:"defaultPort"`
 	DisplayName string        `json:"displayName"`
 	FileName    string        `json:"fileName"`
